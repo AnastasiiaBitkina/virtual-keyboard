@@ -1,0 +1,33 @@
+.virtual-keyboard {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+  }
+  
+  .keyboard-row {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .keyboard-key {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .keyboard-key:hover {
+    background-color: #ddd;
+  }
