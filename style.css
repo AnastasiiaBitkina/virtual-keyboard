@@ -1,0 +1,51 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    text-align: center;
+  }
+  
+  .keyboard {
+    width: 840px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0 auto;
+    background-color: #e3e3e3;
+    border: 2px solid #999;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  
+  .keyboard__button {
+    width: 50px;
+    height: 50px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #999;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .keyboard__button:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+  }
+  
+  .keyboard__button_active {
+    background-color: #ff8c8c;
+  }
+  
+  .area {
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px auto;
+    border: 2px solid pink;
+    border-radius: 5px;
+  }
+ 
