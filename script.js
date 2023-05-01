@@ -282,6 +282,56 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+document.addEventListener('keydown', function (event) {
+  // Если нажата клавиша CTRL, установить флаг isCtrlPressed в true
+  if (event.key === 'Control') {
+    isCtrlPressed = true;
+  }
+
+  // Найти элемент клавиши на основе кода клавиши
+  const keyEl = document.querySelector(`div[data-code="${event.code}"]`);
+
+  // Добавить класс "active" к элементу клавиши, чтобы показать, что клавиша нажата
+  if (keyEl) {
+    keyEl.classList.add('active');
+  }
+});
+// add control
+document.addEventListener('keyup', function (event) {
+  if (event.key === 'Control') {
+    isCtrlPressed = false;
+  }
+
+  const keyEl = document.querySelector(`div[data-code="${event.code}"]`);
+
+
+  if (keyEl) {
+    keyEl.classList.remove('active');
+  }
+});
+
+document.addEventListener('click', function (event) {
+ 
+  const keyEl = event.target.closest('[data-code]');
+
+  if (keyEl) {
+   
+    const code = keyEl.getAttribute('data-code');
+
+    
+    if (document.activeElement.tagName.toLowerCase() !== 'input' &&
+        document.activeElement.tagName.toLowerCase() !== 'textarea') {
+      const event = new KeyboardEvent('keydown', { code });
+      document.dispatchEvent(event);
+    }
+
+    
+    if (isCtrlPressed && ['KeyC', 'KeyX', 'KeyV'].includes(code)) {
+      document.execCommand(code.slice(3).toLowerCase());
+    }
+  }
+});
+
 document.addEventListener('keydown', handler);
 
 document.addEventListener('keyup', handler);
