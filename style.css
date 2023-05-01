@@ -1,33 +1,52 @@
-.virtual-keyboard {
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    text-align: center;
+  }
+  
+  .keyboard {
+    width: 840px;
     display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    background-color: #f1f1f1;
-    border-radius: 4px;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0 auto;
+    background-color: #e3e3e3;
+    border: 2px solid #999;
+    border-radius: 5px;
     padding: 10px;
-    font-family: Arial, sans-serif;
-    font-size: 16px;
   }
   
-  .keyboard-row {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .keyboard-key {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    border: 1px solid #ccc;
+  .keyboard__button {
+    width: 50px;
+    height: 50px;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #999;
+    border-radius: 5px;
     background-color: #fff;
-    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .keyboard__button:hover {
+    background-color: #f1f1f1;
     cursor: pointer;
   }
   
-  .keyboard-key:hover {
-    background-color: #ddd;
+  .keyboard__button_active {
+    background-color: #ff8c8c;
   }
+  
+  
+  .my-input-style {
+    font-size: 20px;
+    padding: 10px;
+    margin: 10px auto;
+    border: 2px solid pink;
+    border-radius: 5px;
+  }
+  
