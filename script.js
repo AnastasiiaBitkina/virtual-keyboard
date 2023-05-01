@@ -1,17 +1,18 @@
-
-// объявляем переменные
-
 const bodyTag = document.querySelector('body');
-let field;
+
+let fieldKey;
+let areaTag;
+
+let pressedKey;
+let pressedKeyIndex;
 
 let eng;
 let rus;
 
-let isCtrlActive = false;
-let isCapsActive = false;
-let isShiftActive = false;
+let isCtrlPressed = false;
+let isCapsPressed = false;
+let isShiftPressed = false;
 
-// создаем массив с буквами клавиатуры
 const arr = [
   {
     code: 'Backquote',
@@ -186,14 +187,220 @@ const indexesOfDynamicKey = [
 const notPrintableKeys = [
   13, 14, 28, 40, 41, 52, 53, 54, 55, 56, 58, 59, 60, 61, 62,
 ];
-// создаем поле для текста
+
+
+// добавляем поле для ввода текста
 
 function fieldInput() {
   const area = document.createElement('textarea');
   area.classList.add('area');
   bodyTag.prepend(area);
-  field = area;
+  areaTag = area;
 }
 fieldInput();
 
+//активируем английский по умолчанию
 
+function setLocalStorage() {
+  localStorage.setItem('eng', eng);
+}
+function getLocalStorage() {
+  if (localStorage.getItem('eng')) {
+    eng = localStorage.getItem('eng');
+  } else {
+    eng = true;
+  }
+}
+getLocalStorage();
+
+//верстаем клавиатуру
+
+function newKeyboard() {
+  const keyboard = document.createElement('div');
+  keyboard.classList.add('keyboard');
+
+  arr.forEach((e) => {
+    const button = document.createElement('button');
+    button.classList.add('keyboard__button');
+    const is2fr = e.keyCode === 8
+      || e.keyCode === 9
+      || e.keyCode === 13
+      || e.keyCode === 16
+      || e.keyCode === 20;
+
+    if (is2fr) {
+      button.style.width = '100px';
+      button.style.gridColumn = 'span 3';
+    }
+    if (e.code === 'Space') {
+      button.style.flexGrow = 1;
+    }
+
+    if (eng === 'true') {
+      button.innerHTML = e.keyEN;
+    } else {
+      button.innerHTML = e.keyRU ? e.keyRU : e.keyEN;
+    }
+
+    button.setAttribute('code', e.code);
+    keyboard.appendChild(button);
+  });
+
+  bodyTag.appendChild(keyboard);
+  fieldKey = keyboard;
+}
+newKeyboard();
+
+// присваеваем конопки клавиатуры 
+
+function returnPressedElement(event) {
+  const buttons = document.querySelectorAll('.keyboard__button');
+  const eventCode = event.code ? event.code : event.target.getAttribute('code');
+
+  arr.forEach((e) => {
+    if (e.code === eventCode) {
+      const indexPressedButton = arr.indexOf(e);
+      pressedKey = buttons[indexPressedButton];
+    }
+  });
+
+  return pressedKey;
+}
+
+// выводим текст в нужном регистре 
+
+function print(event) {
+  const buttons = document.querySelectorAll('.keyboard__button');
+  const eventCode = event.code ? event.code : event.target.getAttribute('code');
+
+  arr.forEach((e) => {
+    if (e.code === eventCode) {
+      pressedKeyIndex = arr.indexOf(e);
+      pressedKey = buttons[pressedKeyIndex];
+    }
+  });
+
+  if (!notPrintableKeys.includes(pressedKeyIndex)) {
+    if (isCapsPressed) {
+      areaTag.value += pressedKey.innerHTML.toUpperCase();
+    } else {
+      areaTag.value += pressedKey.innerHTML;
+    }
+  }
+}
+
+function removeLastCharacter() {
+  areaTag.value = areaTag.value.substring(0, areaTag.value.length - 1);
+}
+// убираем значение по умолчанию со служебюных клавиш и назначаем события
+
+function handler(e) {
+  const isClick = e.type === 'mousedown' || e.type === 'mouseup';
+  const isKey = e.srcElement.className.includes('keyboard__button');
+  const isRemoveBtn = e.code === 'Backspace';
+  const isCapsBtn = e.code === 'CapsLock';
+  const isShiftBtn = e.code === 'ShiftLeft';
+  const isAltPressed = e.code === 'AltLeft' || e.code === 'AltRight';
+
+  if (isClick && !isKey) return;
+
+  e.preventDefault();
+
+  if (e.type === 'keydown' || e.type === 'mousedown') {
+    if (isRemoveBtn) removeLastCharacter();
+
+    // шифт
+    if (isShiftBtn && !isShiftPressed) {
+      isShiftPressed = true;
+      const buttons = document.querySelectorAll('.keyboard__button');
+
+      
+      if (eng === 'true') {
+        for (let i = 0; i < arr.length; i += 1) {
+          if (arr[i].shiftEN) {
+            buttons[i].innerHTML = arr[i].shiftEN;
+          }
+        }
+      } else {
+        for (let i = 0; i < arr.length; i += 1) {
+          if (arr[i].shiftRU) {
+            buttons[i].innerHTML = arr[i].shiftRU;
+          }
+        }
+      }
+    }
+    // шифт
+
+    if (e.code === 'ControlLeft' && !isCtrlPressed) {
+      isCtrlPressed = true;
+    }
+
+    // меняем язык
+    if (isCtrlPressed && isAltPressed) {
+      const buttons = document.querySelectorAll('.keyboard__button_active');
+
+      if (eng === 'true') {
+        indexesOfDynamicKey.forEach((i) => {
+          buttons[i].innerHTML = arr[i].keyRU;
+        });
+        eng = 'false';
+        setLocalStorage();
+      } else {
+        indexesOfDynamicKey.forEach((i) => {
+          buttons[i].innerHTML = arr[i].keyEN;
+        });
+        eng = 'true';
+        setLocalStorage();
+      }
+    }
+   
+
+    if (isCapsBtn) {
+      if (isCapsPressed === true) {
+        isCapsPressed = false;
+      } else {
+        isCapsPressed = true;
+      }
+    }
+
+    const keyPressed = returnPressedElement(e);
+    keyPressed.classList.add('keyboard__button_active');
+  }
+  if (e.type === 'keyup' || e.type === 'mouseup') {
+    if (e.code === 'ControlLeft') {
+      isCtrlPressed = false;
+    }
+    if (isShiftBtn) {
+      isShiftPressed = false;
+      const buttons = document.querySelectorAll('.keyboard__button');
+
+      if (eng === 'true') {
+        for (let i = 0; i < arr.length; i += 1) {
+          buttons[i].innerHTML = arr[i].keyEN;
+        }
+      } else {
+        for (let i = 0; i < arr.length; i += 1) {
+          if (arr[i].keyRU) {
+            buttons[i].innerHTML = arr[i].keyRU;
+          } else {
+            buttons[i].innerHTML = arr[i].keyEN;
+          }
+        }
+      }
+    }
+    const keyPressed = returnPressedElement(e);
+    keyPressed.classList.remove('keyboard__button_active');
+    print(e);
+  }
+}
+
+
+
+
+document.addEventListener('keydown', handler);
+
+document.addEventListener('keyup', handler);
+
+fieldKey.addEventListener('mousedown', handler);
+
+fieldKey.addEventListener('mouseup', handler);
