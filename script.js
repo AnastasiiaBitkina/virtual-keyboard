@@ -9,9 +9,12 @@ let pressedKeyIndex;
 let eng;
 let rus;
 
+let currentLanguage = 'eng';
+
 let isCtrlPressed = false;
 let isCapsPressed = false;
 let isShiftPressed = false;
+
 
 const arr = [
   {
@@ -199,6 +202,7 @@ function fieldInput() {
 }
 fieldInput();
 
+
 //активируем английский по умолчанию
 
 function setLocalStorage() {
@@ -212,6 +216,7 @@ function getLocalStorage() {
   }
 }
 getLocalStorage();
+
 
 //верстаем клавиатуру
 
@@ -335,6 +340,21 @@ function handler(e) {
       isCtrlPressed = true;
     }
 
+    // добавляем навигацию при помощи клавиш вверх/вниз/вправо/влево
+
+    const textarea = document.querySelector('textarea');
+
+    textarea.addEventListener('keydown', (event) => {
+      if (event.code === 'ArrowUp') {
+        textarea.scrollTop -= textarea.scrollHeight / textarea.rows;
+        event.preventDefault();
+      } else if (event.code === 'ArrowDown') {
+        textarea.scrollTop += textarea.scrollHeight / textarea.rows;
+        event.preventDefault();
+      }
+    });
+    
+
     // меняем язык
     if (isCtrlPressed && isAltPressed) {
       const buttons = document.querySelectorAll('.keyboard__button_active');
@@ -393,8 +413,14 @@ function handler(e) {
     print(e);
   }
 }
+function addNotification() {
+  const text = document.createElement('p');
+  text.textContent = 'Ctrl + Shift';
+  text.classList.add('notification');
 
-
+  bodyTag.appendChild(text);
+}
+addNotification();
 
 
 document.addEventListener('keydown', handler);
